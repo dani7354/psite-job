@@ -3,5 +3,5 @@
 *.phar
 *.lock
 
-psite-email/service/.idea/
-psite-email/.vscode/
+.idea/
+.vscode/
