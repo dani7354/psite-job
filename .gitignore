@@ -1,0 +1,7 @@
+.DS_STORE
+*.swp
+*.phar
+*.lock
+
+psite-email/.idea/
+psite-email/.vscode/
