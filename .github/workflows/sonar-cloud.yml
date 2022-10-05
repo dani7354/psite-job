@@ -55,4 +55,3 @@ jobs:
           args:
             -Dsonar.projectKey=dani7354_psite-email
             -Dsonar.organization=dani7354
-            -Dsonar.projectBaseDir=./psite_email/service/src
