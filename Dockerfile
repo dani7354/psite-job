@@ -1,11 +1,23 @@
-FROM python:3.10.7
+FROM python:3.12-alpine
 
-WORKDIR /usr/mail_service
-COPY ./psite-email/service/src ./
+WORKDIR /usr/local/psitejob
+COPY psitejob/ ./psitejob
 
-RUN mkdir /var/log/mail_service
+# create directory for logs
+RUN mkdir /var/log/psitejob
 
-COPY ./requirements.txt ./
-RUN pip install -r requirements.txt
+# create directory for config
+RUN mkdir ./config
 
-ENTRYPOINT [ "python3", "./run_service.py"]
+#install python dependencies
+RUN python3 -m venv venv/
+COPY requirements.txt requirements.txt
+COPY setup.py setup.py
+RUN /usr/local/psitejob/venv/bin/pip install -r requirements.txt
+RUN /usr/local/psitejob/venv/bin/pip install -e .
+
+# install crontabs
+COPY crontab crontab
+RUN crontab crontab
+
+CMD [ "crond", "-f" ]
