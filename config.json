@@ -3,7 +3,7 @@
   "database": {
     "host": "",
     "port": 3306,
-    "username": "",
+    "user": "",
     "password": "",
     "name": ""
   },

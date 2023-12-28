@@ -29,7 +29,7 @@ def setup_logging(configuration):
     logging.basicConfig(
         filename=log_file,
         filemode="a",
-        format='%(asctime)s - %(levelname)s: %(message)s',
+        format="%(asctime)s - %(levelname)s: %(message)s",
         level=log_level)
     logging.getLogger().addHandler(logging.StreamHandler())
 

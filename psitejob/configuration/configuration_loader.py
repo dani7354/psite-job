@@ -3,7 +3,6 @@ import json
 
 DEFAULT_SMTP_PORT = 587
 DEFAULT_DB_PORT = 3306
-DEFAULT_RUN_INTERVAL_SECONDS = 300
 
 
 def _load_from_json(file_path: str) -> dict:
