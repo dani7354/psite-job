@@ -2,13 +2,6 @@ from dataclasses import dataclass
 
 
 @dataclass(frozen=True)
-class Configuration:
-    mail_configuration: 'MailConfiguration'
-    db_configuration: 'DbConfiguration'
-    test_mode_enabled: bool
-
-
-@dataclass(frozen=True)
 class MailConfiguration:
     smtp_port: int
     smtp_user: str
@@ -26,3 +19,10 @@ class DbConfiguration:
     password: str
     name: str
 
+
+@dataclass(frozen=True)
+class Configuration:
+    mail_configuration: MailConfiguration
+    db_configuration: 'DbConfiguration'
+    test_mode_enabled: bool
+    log_dir: str
