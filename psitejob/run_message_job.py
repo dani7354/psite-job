@@ -2,6 +2,7 @@
 import ssl
 import smtplib
 import logging
+import os
 from argparse import Namespace, ArgumentParser
 from datetime import date
 from email.header import Header
@@ -12,8 +13,7 @@ from psitejob.model.message import Message
 from psitejob.repository.message import MessageRepository
 
 
-log_file = "/var/log/psitejob/service.log"
-mail_template_file = "mail_templates/message.html"
+mail_template_file = os.path.join(os.path.dirname(os.path.realpath(__file__)), "mail_templates/message.html")
 today = date.today()
 
 
@@ -27,7 +27,7 @@ def parse_arguments() -> Namespace:
 def setup_logging(configuration):
     log_level = logging.DEBUG if configuration.test_mode_enabled else logging.INFO
     logging.basicConfig(
-        filename=log_file,
+        filename=os.path.join(configuration.log_dir, "job.log"),
         filemode="a",
         format="%(asctime)s - %(levelname)s: %(message)s",
         level=log_level)
@@ -75,7 +75,7 @@ class MessageJob:
                 self._send_message(message_str)
                 messages_sent.append(message)
             except Exception as e:
-                logging.error(f"Failed to sent message with ID {message.id}. Exception: {e}")
+                logging.error(f"Failed to sent message with ID {message.message_id}. Exception: {e}")
 
         return messages_sent
 

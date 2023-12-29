@@ -1,5 +1,6 @@
 {
   "test_mode": false,
+  "logdir": "",
   "database": {
     "host": "",
     "port": 3306,

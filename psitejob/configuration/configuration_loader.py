@@ -13,6 +13,7 @@ def _load_from_json(file_path: str) -> dict:
 def load_configuration(file_path: str) -> Configuration:
     config_file_dict = _load_from_json(file_path)
     test_mode_enabled = bool(config_file_dict.get("test_mode", "False"))
+    log_dir = config_file_dict["logdir"]
 
     mail_config = config_file_dict["mail"]
     smtp_host = mail_config["smtp_host"]
@@ -32,4 +33,5 @@ def load_configuration(file_path: str) -> Configuration:
     return Configuration(
         MailConfiguration(smtp_port, smtp_user, smtp_host, smtp_password, mail_sender, mail_recipient),
         DbConfiguration(db_host, db_port, db_user, db_password, db_name),
-        test_mode_enabled)
+        test_mode_enabled,
+        log_dir)
