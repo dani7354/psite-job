@@ -1,7 +1,7 @@
 #!/bin/bash
-declare -r output_dir="/usr/local/stuhrs_dk/web/goaccess/"
+declare -r output_dir="/usr/local/psitejob/goaccess/"
 declare -r log_dir="/var/log/stuhrs_dk/web/"
 
-echo "Generating GoAccess report..."
-zcat -f "${log_dir}/access.log.*.gz" | goaccess -o "${output_dir}/index.html"  "${log_dir}/access.log" --log-format=COMBINED -
-echo "Report generated!"
+echo "$(date) - Generating GoAccess report..."
+goaccess -o "${output_dir}/index.html" -f "${log_dir}/access.log" "${log_dir}/access.log.1" --log-format=COMBINED
+echo "$(date) - Report generated!"
