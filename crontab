@@ -1,1 +1,2 @@
 */10 * * * * cd /usr/local/psitejob/ && ./venv/bin/python3 ./psitejob/run_message_job.py -c ./config/config.json
+*/5 * * * * /usr/local/psitejob/psitejob/generate-goaccess-report.sh

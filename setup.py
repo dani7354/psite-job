@@ -17,7 +17,6 @@ setup(
     packages=[
         "psitejob",
         "psitejob.configuration",
-        "psitejob.model",
         "psitejob.repository"],
     url="https://github.com/dani7354/psite-job",
     license="MIT",

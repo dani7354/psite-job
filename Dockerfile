@@ -1,5 +1,7 @@
 FROM python:3.12-alpine
 
+RUN apk add --update --no-cache goaccess bash
+
 WORKDIR /usr/local/psitejob
 COPY psitejob/ ./psitejob
 
@@ -8,6 +10,16 @@ RUN mkdir /var/log/psitejob
 
 # create directory for config
 RUN mkdir ./config
+
+# setup GoAccess
+RUN mkdir -p /usr/local/share/GeoIP
+COPY goaccess/GeoLite2-Country.mmdb /usr/local/share/GeoIP/GeoLite2-Country.mmdb
+COPY goaccess/goaccess.conf /etc/goaccess/goaccess.conf
+
+RUN mkdir -p /var/log/stuhrs_dk/web
+RUN mkdir -p goaccess
+
+RUN chmod +x psitejob/generate-goaccess-report.sh
 
 #install python dependencies
 RUN python3 -m venv venv/
