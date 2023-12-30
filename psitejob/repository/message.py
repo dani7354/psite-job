@@ -17,5 +17,6 @@ class MessageRepository(BaseRepository):
     def set_messages_sent(self, messages: list[Message]) -> None:
         with self.get_session() as session:
             for message in messages:
-                message.date_sent = datetime.now()
+                updated_message = session.query(Message).filter(Message.id == message.id).first()
+                updated_message.date_sent = datetime.now()
             session.commit()

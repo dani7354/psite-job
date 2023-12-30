@@ -14,4 +14,4 @@ class BaseRepository:
     def _get_engine(db_configuration: DbConfiguration):
         return create_engine(f"mysql+mysqlconnector://{db_configuration.user}:{db_configuration.password}@"
                              f"{db_configuration.host}:{db_configuration.port}/{db_configuration.name}",
-                             echo=True)
+                             echo=False)
