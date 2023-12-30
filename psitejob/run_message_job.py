@@ -27,7 +27,7 @@ def parse_arguments() -> Namespace:
 def setup_logging(configuration):
     log_level = logging.DEBUG if configuration.test_mode_enabled else logging.INFO
     logging.basicConfig(
-        filename=os.path.join(configuration.log_dir, "job.log"),
+        filename=os.path.join(configuration.log_dir, "message_job.log"),
         filemode="a",
         format="%(asctime)s - %(levelname)s: %(message)s",
         level=log_level)

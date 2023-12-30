@@ -10,7 +10,7 @@ class Base(DeclarativeBase):
 
 class Message(Base):
     __tablename__ = "Message"
-    id: Mapped[int] = Column(Integer, primary_key=True)
+    id: Mapped[int] = Column(Integer, primary_key=True, autoincrement=True)
     subject: Mapped[str] = Column(String(255), nullable=False)
     body: Mapped[str] = Column(String(1200), nullable=False)
     date_created: Mapped[datetime] = Column("DateCreated", DateTime, nullable=False)
@@ -22,14 +22,14 @@ class Message(Base):
 
 class ProjectUpdate(Base):
     __tablename__ = "ProjectUpdate"
-    id: Mapped[int] = Column(Integer, primary_key=True)
+    id: Mapped[int] = Column(Integer, primary_key=True, autoincrement=True)
     project_id: Mapped[int] = Column("ProjectId", Integer, ForeignKey("Project.id"))
     updated_at: Mapped[datetime] = Column("UpdatedAt", DateTime, nullable=False)
 
 
 class Project(Base):
     __tablename__ = "Project"
-    id: Mapped[int] = Column(Integer, primary_key=True)
+    id: Mapped[int] = Column(Integer, primary_key=True, autoincrement=True)
     title: Mapped[str] = Column(String(255), nullable=False)
     url: Mapped[str] = Column(String(255), nullable=False)
     description: Mapped[str] = Column(String(1200), nullable=False)
