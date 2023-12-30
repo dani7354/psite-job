@@ -9,7 +9,7 @@ from email.header import Header
 from email.mime.text import MIMEText
 from psitejob.configuration.configuration_loader import load_configuration
 from psitejob.configuration.configuration import Configuration
-from psitejob.model.message import Message
+from psitejob.repository.model import Message
 from psitejob.repository.message import MessageRepository
 
 
@@ -75,7 +75,7 @@ class MessageJob:
                 self._send_message(message_str)
                 messages_sent.append(message)
             except Exception as e:
-                logging.error(f"Failed to sent message with ID {message.message_id}. Exception: {e}")
+                logging.error(f"Failed to sent message with ID {message.id}. Exception: {e}")
 
         return messages_sent
 
