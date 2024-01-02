@@ -42,7 +42,10 @@ class ProjectUpdatesJob:
                 if not commits:
                     continue
 
-                newest_commit_date = datetime.fromisoformat(commits[0]["commit"]["author"]["date"]).replace(tzinfo=None)
+                commit_date_str = commits[0]["commit"]["author"]["date"]
+                # parse date from string, convert to system timezone and remove tzinfo
+                newest_commit_date = datetime.fromisoformat(commit_date_str).astimezone(None).replace(tzinfo=None)
+
                 project_updates = sorted(project.updates, key=lambda x: x.updated_at, reverse=True)
                 latest_existing_update = project_updates[0] if project.updates else None
                 if latest_existing_update and newest_commit_date <= latest_existing_update.updated_at:
