@@ -1,7 +1,5 @@
 from datetime import datetime
-
 from sqlalchemy.orm import joinedload
-
 from psitejob.configuration.configuration import DbConfiguration
 from psitejob.repository.base import BaseRepository
 from psitejob.repository.model import Project, ProjectUpdate
