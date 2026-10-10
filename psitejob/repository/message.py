@@ -1,4 +1,8 @@
+# pylint: disable=useless-parent-delegation
 from datetime import datetime
+from typing import Sequence
+
+from sqlalchemy import select
 from psitejob.configuration.configuration import DbConfiguration
 from psitejob.repository.model import Message
 from psitejob.repository.base import BaseRepository
@@ -10,13 +14,16 @@ class MessageRepository(BaseRepository):
 
     def get_messages_to_send(self) -> list[Message]:
         with self.get_session() as session:
-            messages = session.query(Message).filter(Message.date_sent.is_(None)).all()
+            statement = select(Message).where(Message.date_sent.is_(None))
+            messages = session.scalars(statement).all()
 
-        return messages
+        return list(messages)
 
-    def set_messages_sent(self, messages: list[Message]) -> None:
+    def set_messages_sent(self, messages: Sequence[Message]) -> None:
         with self.get_session() as session:
             for message in messages:
-                updated_message = session.query(Message).filter(Message.id == message.id).first()
+                updated_message = session.scalar(select(Message).where(Message.id == message.id))
+                if updated_message is None:
+                    raise LookupError(f"Message with id {message.id} was not found")
                 updated_message.date_sent = datetime.now()
             session.commit()

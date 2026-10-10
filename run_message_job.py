@@ -7,13 +7,15 @@ from argparse import Namespace, ArgumentParser
 from datetime import date
 from email.header import Header
 from email.mime.text import MIMEText
+from smtplib import SMTPException
+from typing import Sequence
+
 from psitejob.configuration.configuration_loader import load_configuration
 from psitejob.configuration.configuration import Configuration
 from psitejob.repository.model import Message
 from psitejob.repository.message import MessageRepository
 
-
-mail_template_file = os.path.join(os.path.dirname(os.path.realpath(__file__)), "mail_templates/message.html")
+mail_template_file = os.path.join(os.path.dirname(os.path.realpath(__file__)), "psitejob/mail_templates/message.html")
 today = date.today()
 
 
@@ -25,23 +27,31 @@ def parse_arguments() -> Namespace:
 
 
 def setup_logging(configuration):
+    handler = logging.StreamHandler()
+    handler.setFormatter(
+        logging.Formatter(
+            fmt="%(asctime)s [%(levelname)-8s] %(name)s: %(message)s",
+            datefmt="%Y-%m-%d %H:%M:%S",
+        )
+    )
+    logger = logging.getLogger()
     log_level = logging.DEBUG if configuration.test_mode_enabled else logging.INFO
-    logging.basicConfig(
-        filename=os.path.join(configuration.log_dir, "message_job.log"),
-        filemode="a",
-        format="%(asctime)s - %(levelname)s: %(message)s",
-        level=log_level)
-    logging.getLogger().addHandler(logging.StreamHandler())
+    logger.setLevel(log_level)
+    logger.addHandler(handler)
 
 
 def log_configuration_summary(configuration: Configuration):
-    logging.info(f"Test mode enabled: {configuration.test_mode_enabled}")
-    logging.debug(f"Mail recipient: {configuration.mail_configuration.mail_recipient}")
-    logging.debug(f"SMTP host: {configuration.mail_configuration.smtp_host}:"
-                  f"{configuration.mail_configuration.smtp_port}")
-    logging.debug(f"Database host {configuration.db_configuration.host}:"
-                  f"{configuration.db_configuration.port}. "
-                  f"Database name: {configuration.db_configuration.name}")
+    logging.info("Test mode enabled: %s", configuration.test_mode_enabled)
+    logging.debug("Mail recipient: %s", configuration.mail_configuration.mail_recipient)
+    logging.debug(
+        "SMTP host: %s:%d", configuration.mail_configuration.smtp_host, configuration.mail_configuration.smtp_port
+    )
+    logging.debug(
+        "Database host %s:%d. Database name: %s",
+        configuration.db_configuration.host,
+        configuration.db_configuration.port,
+        configuration.db_configuration.name,
+    )
 
 
 class MessageJob:
@@ -54,40 +64,39 @@ class MessageJob:
             logging.info("Reading messages from source...")
             messages = self._get_messages()
 
-            logging.info(f"Sending {len(messages)} messages...")
+            logging.info("Sending %d messages...", len(messages))
             messages_sent = self._send_messages(messages) if not self.configuration.test_mode_enabled else messages
 
-            logging.info(f"{len(messages_sent)} messages sent successfully!")
+            logging.info("%d messages sent successfully!", len(messages_sent))
             self._update_status_for_messages(messages_sent)
         except Exception as e:
-            logging.error(e)
+            logging.exception(e)
+            raise SystemExit(1) from e
 
     def _get_messages(self) -> list[Message]:
         messages = self.message_repository.get_messages_to_send()
 
         return messages
 
-    def _send_messages(self, messages) -> list:
+    def _send_messages(self, messages: Sequence[Message]) -> list[Message]:
         messages_sent = []
         for message in messages:
             try:
                 message_str = self._create_message_str(message)
                 self._send_message(message_str)
                 messages_sent.append(message)
-            except Exception as e:
-                logging.error(f"Failed to sent message with ID {message.id}. Exception: {e}")
+            except (ValueError, SMTPException) as e:
+                logging.exception("Failed to send message with ID %d. Exception: %s", message.id, e)
 
         return messages_sent
 
-    def _update_status_for_messages(self, messages_sent) -> None:
+    def _update_status_for_messages(self, messages_sent: Sequence[Message]) -> None:
         if not messages_sent:
             return
-        try:
-            self.message_repository.set_messages_sent(messages_sent)
-        except Exception as e:
-            logging.error(f"Failed to update status for messages. Exception: {e}")
 
-    def _create_message_str(self, message) -> MIMEText:
+        self.message_repository.set_messages_sent(messages_sent)
+
+    def _create_message_str(self, message: Message) -> MIMEText:
         message_body = self._read_html_template(mail_template_file)
         message_body = message_body.replace("[subject]", message.subject)
         message_body = message_body.replace("[sender_email]", message.sender_email)
@@ -106,11 +115,13 @@ class MessageJob:
 
     def _send_message(self, message_str) -> None:
         context = ssl.create_default_context()
-        with smtplib.SMTP(host=self.configuration.mail_configuration.smtp_host,
-                          port=self.configuration.mail_configuration.smtp_port) as mail_server:
+        with smtplib.SMTP(
+            host=self.configuration.mail_configuration.smtp_host, port=self.configuration.mail_configuration.smtp_port
+        ) as mail_server:
             mail_server.starttls(context=context)
-            mail_server.login(self.configuration.mail_configuration.smtp_user,
-                              self.configuration.mail_configuration.smtp_password)
+            mail_server.login(
+                self.configuration.mail_configuration.smtp_user, self.configuration.mail_configuration.smtp_password
+            )
             mail_server.send_message(message_str)
 
     @staticmethod

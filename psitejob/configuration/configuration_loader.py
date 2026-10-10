@@ -1,12 +1,13 @@
-from psitejob.configuration.configuration import Configuration, DbConfiguration, MailConfiguration
 import json
+
+from psitejob.configuration.configuration import Configuration, DbConfiguration, MailConfiguration
 
 DEFAULT_SMTP_PORT = 587
 DEFAULT_DB_PORT = 3306
 
 
 def _load_from_json(file_path: str) -> dict:
-    with open(file_path, "r") as json_file:
+    with open(file_path, "r", encoding="utf-8") as json_file:
         return json.load(json_file)
 
 
@@ -34,4 +35,5 @@ def load_configuration(file_path: str) -> Configuration:
         MailConfiguration(smtp_port, smtp_user, smtp_host, smtp_password, mail_sender, mail_recipient),
         DbConfiguration(db_host, db_port, db_user, db_password, db_name),
         test_mode_enabled,
-        log_dir)
+        log_dir,
+    )

@@ -23,6 +23,6 @@ class DbConfiguration:
 @dataclass(frozen=True)
 class Configuration:
     mail_configuration: MailConfiguration
-    db_configuration: 'DbConfiguration'
+    db_configuration: "DbConfiguration"
     test_mode_enabled: bool
     log_dir: str

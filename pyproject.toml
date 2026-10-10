@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "psite-job"
+version = "2.0.0"
+description = "Services for the psite-web site"
+requires-python = ">=3.14"
+dependencies = [
+    "mysql-connector-python",
+    "sqlalchemy",
+    "requests"
+]
+
+[project.optional-dependencies]
+dev = ["pylint", "pytest", "black"]
+
+[project.scripts]
+run-project-updates-job = "run_project_updates_job:main"
+run-message-job = "run_message_job:main"
+
+[tool.setuptools]
+packages = ["psitejob"]
