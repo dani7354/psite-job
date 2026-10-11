@@ -1,4 +1,6 @@
+# pylint: disable=useless-parent-delegation
 from datetime import datetime
+from sqlalchemy import select
 from sqlalchemy.orm import joinedload
 from psitejob.configuration.configuration import DbConfiguration
 from psitejob.repository.base import BaseRepository
@@ -11,9 +13,9 @@ class ProjectRepository(BaseRepository):
 
     def get_projects(self) -> list[Project]:
         with self.get_session() as session:
-            projects = session.query(Project).options(joinedload(Project.updates)).all()
+            projects = session.scalars(select(Project).options(joinedload(Project.updates))).unique().all()
 
-        return projects
+        return list(projects)
 
     def add_update(self, project_id: int, updated_at: datetime) -> None:
         with self.get_session() as session:

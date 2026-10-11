@@ -4,6 +4,9 @@ RUN apk add --update --no-cache goaccess bash
 
 WORKDIR /usr/local/psitejob
 COPY psitejob/ ./psitejob
+COPY run_message_job.py run_project_updates_job.py ./
+COPY pyproject.toml README.md ./
+COPY generate-goaccess-report.sh .
 
 # create directory for logs
 RUN mkdir /var/log/psitejob
@@ -19,14 +22,13 @@ COPY goaccess/goaccess.conf /etc/goaccess/goaccess.conf
 RUN mkdir -p /var/log/stuhrs_dk/web
 RUN mkdir -p goaccess
 
-RUN chmod +x psitejob/generate-goaccess-report.sh
+RUN chmod +x generate-goaccess-report.sh
 
 #install python dependencies
-RUN python3 -m venv venv/
-COPY requirements.txt requirements.txt
-COPY setup.py setup.py
-RUN /usr/local/psitejob/venv/bin/pip install -r requirements.txt
-RUN /usr/local/psitejob/venv/bin/pip install -e .
+ENV VENV_PATH=/opt/venv
+RUN python3 -m venv "$VENV_PATH"
+ENV PATH="$VENV_PATH/bin:$PATH"
+RUN pip install --only-binary :all: -e .
 
 # install crontabs
 COPY crontab crontab

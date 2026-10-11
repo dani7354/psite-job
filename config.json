@@ -15,5 +15,8 @@
     "smtp_password": "",
     "mail_sender": "",
     "mail_recipient": ""
+  },
+  "discord": {
+    "webhook_url": ""
   }
 }

@@ -12,6 +12,11 @@ class MailConfiguration:
 
 
 @dataclass(frozen=True)
+class DiscordConfiguration:
+    webhook_url: str
+
+
+@dataclass(frozen=True)
 class DbConfiguration:
     host: str
     port: int
@@ -23,6 +28,7 @@ class DbConfiguration:
 @dataclass(frozen=True)
 class Configuration:
     mail_configuration: MailConfiguration
-    db_configuration: 'DbConfiguration'
+    db_configuration: DbConfiguration
+    discord_configuration: DiscordConfiguration
     test_mode_enabled: bool
     log_dir: str

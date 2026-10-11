@@ -1,4 +1,0 @@
-mysql-connector-python
-setuptools
-sqlalchemy
-requests
