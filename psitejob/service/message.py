@@ -7,7 +7,7 @@ from email.mime.text import MIMEText
 from pathlib import Path
 from typing import ClassVar
 
-from psitejob.api.discord import DiscordWebHookClient, DiscordWebhookError
+from psitejob.api.discord import DiscordWebhookClient, DiscordWebhookError
 from psitejob.configuration.configuration import Configuration
 from psitejob.repository.model import Message
 
@@ -66,7 +66,7 @@ class EmailService(MessageService):
 class DiscordMessageService(MessageService):
     _date_format: ClassVar[str] = "%Y-%m-%d %H:%M:%S"
 
-    def __init__(self, discord_webhook_client: DiscordWebHookClient) -> None:
+    def __init__(self, discord_webhook_client: DiscordWebhookClient) -> None:
         self._discord_webhook_client = discord_webhook_client
         self._logger = logging.getLogger(self.__class__.__name__)
 

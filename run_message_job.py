@@ -3,7 +3,7 @@ import logging
 from argparse import Namespace, ArgumentParser
 from pathlib import Path
 
-from psitejob.api.discord import DiscordWebHookClient
+from psitejob.api.discord import DiscordWebhookClient
 from psitejob.configuration.configuration_loader import load_configuration
 from psitejob.configuration.configuration import Configuration
 from psitejob.job.message import MessageJob
@@ -57,7 +57,7 @@ def main() -> None:
     log_configuration_summary(configuration)
 
     message_repository = MessageRepository(configuration.db_configuration)
-    discord_webhook_client = DiscordWebHookClient(configuration.discord_configuration.webhook_url)
+    discord_webhook_client = DiscordWebhookClient(configuration.discord_configuration.webhook_url)
     message_services = [DiscordMessageService(discord_webhook_client), EmailService(configuration, mail_template_file)]
 
     message_job = MessageJob(message_repository, message_services, configuration)

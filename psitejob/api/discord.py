@@ -8,7 +8,7 @@ class DiscordWebhookError(Exception):
     pass
 
 
-class DiscordWebHookClient:
+class DiscordWebhookClient:
     """
     Client for sending messages to a Discord webhook.
     See docs: https://docs.discord.com/developers/resources/webhook#execute-webhook
