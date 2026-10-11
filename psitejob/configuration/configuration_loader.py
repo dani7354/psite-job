@@ -1,6 +1,10 @@
 import json
 
-from psitejob.configuration.configuration import Configuration, DbConfiguration, MailConfiguration
+from psitejob.configuration.configuration import (
+    Configuration,
+    DbConfiguration,
+    MailConfiguration,
+)
 
 DEFAULT_SMTP_PORT = 587
 DEFAULT_DB_PORT = 3306

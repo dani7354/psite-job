@@ -59,7 +59,10 @@ class ProjectUpdatesJob:
                 self._project_repository.add_update(project.id, updated_at=newest_commit_date)
 
             except ApiError as ex:
-                logging.error("Error while getting update for project %s:. Skipping...", project.title)
+                logging.error(
+                    "Error while getting update for project %s:. Skipping...",
+                    project.title,
+                )
                 logging.exception(ex)
 
 

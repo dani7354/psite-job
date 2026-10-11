@@ -1,3 +1,3 @@
-*/10 * * * * cd /usr/local/psitejob/ && /opt/venv/bin/python3 run-message-job -c ./config/config.json
-15 0 * * * cd /usr/local/psitejob/ && /opt/venv/bin/python3 run-project-updates-job -c ./config/config.json
+*/10 * * * * cd /usr/local/psitejob/ && /opt/venv/bin/run-message-job -c ./config/config.json
+*/30 * * * * cd /usr/local/psitejob/ && /opt/venv/bin/run-project-updates-job -c ./config/config.json
 */7 * * * * /usr/local/psitejob/generate-goaccess-report.sh

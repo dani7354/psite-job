@@ -44,7 +44,9 @@ def log_configuration_summary(configuration: Configuration):
     logging.info("Test mode enabled: %s", configuration.test_mode_enabled)
     logging.debug("Mail recipient: %s", configuration.mail_configuration.mail_recipient)
     logging.debug(
-        "SMTP host: %s:%d", configuration.mail_configuration.smtp_host, configuration.mail_configuration.smtp_port
+        "SMTP host: %s:%d",
+        configuration.mail_configuration.smtp_host,
+        configuration.mail_configuration.smtp_port,
     )
     logging.debug(
         "Database host %s:%d. Database name: %s",
@@ -103,7 +105,7 @@ class MessageJob:
         message_body = message_body.replace("[sender_name]", message.sender_name)
         message_body = message_body.replace("[sender_ip]", message.sender_ip)
         message_body = message_body.replace("[body]", message.body)
-        message_body = message_body.replace("[date_created]", message.date_created.strftime("%Y/%m/%d %H:%M:%S.%f"))
+        message_body = message_body.replace("[date_created]", message.date_created.strftime("%Y-%m-%d %H:%M:%S.%f"))
 
         mime_text_message = MIMEText(message_body, "html", "utf-8")
         subject = f"Message received: {message.subject}"
@@ -116,11 +118,13 @@ class MessageJob:
     def _send_message(self, message_str) -> None:
         context = ssl.create_default_context()
         with smtplib.SMTP(
-            host=self.configuration.mail_configuration.smtp_host, port=self.configuration.mail_configuration.smtp_port
+            host=self.configuration.mail_configuration.smtp_host,
+            port=self.configuration.mail_configuration.smtp_port,
         ) as mail_server:
             mail_server.starttls(context=context)
             mail_server.login(
-                self.configuration.mail_configuration.smtp_user, self.configuration.mail_configuration.smtp_password
+                self.configuration.mail_configuration.smtp_user,
+                self.configuration.mail_configuration.smtp_password,
             )
             mail_server.send_message(message_str)
 

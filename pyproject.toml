@@ -16,9 +16,15 @@ dependencies = [
 [project.optional-dependencies]
 dev = ["pylint", "pytest", "black"]
 
+[tool.setuptools]
+py-modules = ["run_project_updates_job", "run_message_job"]
+
+[tool.setuptools.packages.find]
+include = ["psitejob*"]
+
+[tool.setuptools.package-data]
+psitejob = ["mail_templates/*.html"]
+
 [project.scripts]
 run-project-updates-job = "run_project_updates_job:main"
 run-message-job = "run_message_job:main"
-
-[tool.setuptools]
-packages = ["psitejob"]
