@@ -26,7 +26,7 @@ RUN chmod +x generate-goaccess-report.sh
 
 #install python dependencies
 ENV VENV_PATH=/opt/venv
-RUN python3 -m venv $VENV_PATH
+RUN python3 -m venv "$VENV_PATH"
 ENV PATH="$VENV_PATH/bin:$PATH"
 RUN pip install --only-binary :all: -e .
 
