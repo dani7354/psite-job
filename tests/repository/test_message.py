@@ -8,7 +8,7 @@ from psitejob.repository.message import MessageRepository
 from psitejob.repository.model import Message
 
 
-@pytest.fixture(scope="function", name="message_repository")
+@pytest.fixture(name="message_repository")
 def message_repository_fixture(data_engine: Engine, db_config: DbConfiguration) -> MessageRepository:
     repository = MessageRepository(db_config)
     repository.engine = data_engine

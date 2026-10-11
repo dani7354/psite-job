@@ -8,7 +8,7 @@ from psitejob.repository.model import Project
 from psitejob.repository.project import ProjectRepository
 
 
-@pytest.fixture(scope="function", name="project_repository")
+@pytest.fixture(name="project_repository")
 def project_repository_fixture(data_engine: Engine, db_config: DbConfiguration) -> ProjectRepository:
     repository = ProjectRepository(db_config)
     repository.engine = data_engine
