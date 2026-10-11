@@ -19,5 +19,5 @@ class GithubApiClient:
             response = requests.get(url, timeout=self._default_request_timeout_secs)
             response.raise_for_status()
             return response.json()
-        except requests.exceptions.HTTPError as e:
+        except requests.exceptions.RequestException as e:
             raise ApiError(f"Error while requesting {url}") from e
