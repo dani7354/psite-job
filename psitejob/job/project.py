@@ -34,7 +34,7 @@ class ProjectUpdatesJob:
 
             except ApiError as ex:
                 self._logger.error(
-                    "Error while getting update for project %s:. Skipping...",
+                    "Error while getting update for project %s. Skipping...",
                     project.title,
                 )
                 self._logger.exception(ex)

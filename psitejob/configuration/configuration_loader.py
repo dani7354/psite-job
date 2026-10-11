@@ -1,4 +1,5 @@
 import json
+from pathlib import Path
 
 from psitejob.configuration.configuration import (
     Configuration,
@@ -12,6 +13,9 @@ DEFAULT_DB_PORT = 3306
 
 
 def _load_from_json(file_path: str) -> dict:
+    if not Path(file_path).is_file():
+        raise FileNotFoundError(f"Configuration file not found")
+
     with open(file_path, "r", encoding="utf-8") as json_file:
         return json.load(json_file)
 
