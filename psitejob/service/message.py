@@ -34,7 +34,7 @@ class EmailService(MessageService):
         with smtplib.SMTP(
             host=self._configuration.mail_configuration.smtp_host,
             port=self._configuration.mail_configuration.smtp_port,
-            timeout=self._smtp_timeout_secs
+            timeout=self._smtp_timeout_secs,
         ) as mail_server:
             mail_server.starttls(context=context)
             mail_server.login(
