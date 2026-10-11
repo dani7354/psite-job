@@ -29,7 +29,7 @@ class DiscordWebhookClient:
                 f"Message length must be between {self._content_min_length} and {self._content_max_length} characters."
             )
         try:
-            payload = {"content": message}
+            payload = {"content": message, "allowed_mentions": {"parse": []}}
             response = requests.post(self._webhook_url, json=payload, timeout=self._request_timeout_secs)
             response.raise_for_status()
 
