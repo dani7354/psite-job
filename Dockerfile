@@ -28,7 +28,7 @@ RUN chmod +x generate-goaccess-report.sh
 ENV VENV_PATH=/opt/venv
 RUN python3 -m venv $VENV_PATH
 ENV PATH="$VENV_PATH/bin:$PATH"
-RUN pip install -e .
+RUN pip install --only-binary :all: -e .
 
 # install crontabs
 COPY crontab crontab
