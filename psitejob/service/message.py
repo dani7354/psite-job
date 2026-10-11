@@ -81,13 +81,11 @@ class DiscordMessageService(MessageService):
 
     @classmethod
     def _format_message_str(cls, message: Message) -> str:
-        return f"""
-        ## {message.subject}
-        Afsender-IP: **{message.sender_ip}**
-        Afsender-navn: **{message.sender_name}**
-        Afsender-email: **{message.sender_email}**
-        Tidspunkt: **{message.date_created.strftime(cls._date_format)}**
-        
-        
-        {message.body}
-        """
+        return (
+            f"## {message.subject}\n"
+            f"Afsender-IP: **{message.sender_ip}**\n"
+            f"Afsender-navn: **{message.sender_name}**\n"
+            f"Afsender-email: **{message.sender_email}**\n"
+            f"Tidspunkt: **{message.date_created.strftime(cls._date_format)}**\n\n"
+            f"{message.body}"
+        )
