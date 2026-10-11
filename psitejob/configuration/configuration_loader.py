@@ -4,6 +4,7 @@ from psitejob.configuration.configuration import (
     Configuration,
     DbConfiguration,
     MailConfiguration,
+    DiscordConfiguration,
 )
 
 DEFAULT_SMTP_PORT = 587
@@ -28,6 +29,8 @@ def load_configuration(file_path: str) -> Configuration:
     mail_recipient = mail_config["mail_recipient"]
     mail_sender = mail_config["mail_sender"]
 
+    discord_webhook_url = config_file_dict["discord"]["webhook_url"]
+
     database_config = config_file_dict["database"]
     db_host = database_config["host"]
     db_port = database_config.get("port", DEFAULT_DB_PORT)
@@ -38,6 +41,7 @@ def load_configuration(file_path: str) -> Configuration:
     return Configuration(
         MailConfiguration(smtp_port, smtp_user, smtp_host, smtp_password, mail_sender, mail_recipient),
         DbConfiguration(db_host, db_port, db_user, db_password, db_name),
+        DiscordConfiguration(discord_webhook_url),
         test_mode_enabled,
         log_dir,
     )

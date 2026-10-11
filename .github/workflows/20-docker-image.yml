@@ -8,22 +8,28 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      -
-        name: Set up QEMU
+      - name: Shorten SHA
+        id: sha
+        run: echo "short=${GITHUB_SHA:0:8}" >> $GITHUB_OUTPUT
+
+      - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
-      -
-        name: Set up Docker Buildx
+
+      - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
-      -
-        name: Login to DockerHub
+
+      - name: Login to DockerHub
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
           logout: true
-      -
-        name: Build and push
+
+      - name: Build and push
         uses: docker/build-push-action@v3
         with:
+          platforms: linux/amd64,linux/arm64/v8
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/psite_job:1.0
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/psite_job:latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/psite_job:${{ steps.sha.outputs.short }}
