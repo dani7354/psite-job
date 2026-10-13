@@ -1,4 +1,5 @@
 import logging
+import html
 import smtplib
 import ssl
 from abc import ABC, abstractmethod
@@ -11,6 +12,8 @@ from psitejob.api.discord import DiscordWebhookClient, DiscordWebhookError
 from psitejob.configuration.configuration import Configuration
 from psitejob.repository.model import Message
 
+MESSAGE_TIMESTAMP_FORMAT = "%Y-%m-%d %H:%M:%S"
+
 
 class MessageService(ABC):
 
@@ -22,6 +25,7 @@ class MessageService(ABC):
 class EmailService(MessageService):
     _smtp_timeout_secs: ClassVar[int] = 10
     _encoding: ClassVar[str] = "utf-8"
+    _message_timestamp_format: ClassVar[str] = MESSAGE_TIMESTAMP_FORMAT
 
     def __init__(self, configuration: Configuration, email_template_file_path: Path) -> None:
         self._configuration = configuration
@@ -45,14 +49,17 @@ class EmailService(MessageService):
 
     def _create_message_str(self, message: Message) -> MIMEText:
         message_body = self._read_html_template(self._mail_template_file)
-        message_body = message_body.replace("[subject]", message.subject)
-        message_body = message_body.replace("[sender_email]", message.sender_email)
-        message_body = message_body.replace("[sender_name]", message.sender_name)
-        message_body = message_body.replace("[sender_ip]", message.sender_ip)
-        message_body = message_body.replace("[body]", message.body)
-        message_body = message_body.replace("[date_created]", message.date_created.strftime("%Y-%m-%d %H:%M:%S.%f"))
+        escaped_subject = html.escape(message.subject)
+        message_body = message_body.replace("[subject]", escaped_subject)
+        message_body = message_body.replace("[sender_email]", html.escape(message.sender_email))
+        message_body = message_body.replace("[sender_name]", html.escape(message.sender_name))
+        message_body = message_body.replace("[sender_ip]", html.escape(message.sender_ip))
+        message_body = message_body.replace("[body]", html.escape(message.body))
+        message_body = message_body.replace(
+            "[date_created]", html.escape(message.date_created.strftime(self._message_timestamp_format))
+        )
         mime_text_message = MIMEText(message_body, "html", self._encoding)
-        subject = f"Message received: {message.subject}"
+        subject = f"Message received: {escaped_subject}"
         mime_text_message["Subject"] = Header(subject, self._encoding)
         mime_text_message["From"] = self._configuration.mail_configuration.mail_sender
         mime_text_message["To"] = self._configuration.mail_configuration.mail_recipient
@@ -66,7 +73,7 @@ class EmailService(MessageService):
 
 
 class DiscordMessageService(MessageService):
-    _date_format: ClassVar[str] = "%Y-%m-%d %H:%M:%S"
+    _message_timestamp_format: ClassVar[str] = MESSAGE_TIMESTAMP_FORMAT
 
     def __init__(self, discord_webhook_client: DiscordWebhookClient) -> None:
         self._discord_webhook_client = discord_webhook_client
@@ -88,6 +95,6 @@ class DiscordMessageService(MessageService):
             f"Afsender-IP: **{message.sender_ip}**\n"
             f"Afsender-navn: **{message.sender_name}**\n"
             f"Afsender-email: **{message.sender_email}**\n"
-            f"Tidspunkt: **{message.date_created.strftime(cls._date_format)}**\n\n"
+            f"Tidspunkt: **{message.date_created.strftime(cls._message_timestamp_format)}**\n\n"
             f"{message.body}"
         )
