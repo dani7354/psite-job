@@ -12,7 +12,6 @@ from psitejob.api.discord import DiscordWebhookClient, DiscordWebhookError
 from psitejob.configuration.configuration import Configuration
 from psitejob.repository.model import Message
 
-
 MESSAGE_TIMESTAMP_FORMAT = "%Y-%m-%d %H:%M:%S"
 
 
@@ -56,7 +55,9 @@ class EmailService(MessageService):
         message_body = message_body.replace("[sender_name]", html.escape(message.sender_name))
         message_body = message_body.replace("[sender_ip]", html.escape(message.sender_ip))
         message_body = message_body.replace("[body]", html.escape(message.body))
-        message_body = message_body.replace("[date_created]", html.escape(message.date_created.strftime(self._message_timestamp_format)))
+        message_body = message_body.replace(
+            "[date_created]", html.escape(message.date_created.strftime(self._message_timestamp_format))
+        )
         mime_text_message = MIMEText(message_body, "html", self._encoding)
         subject = f"Message received: {escaped_subject}"
         mime_text_message["Subject"] = Header(subject, self._encoding)

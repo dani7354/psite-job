@@ -7,6 +7,7 @@ from psitejob.api.discord import DiscordWebhookClient
 from psitejob.configuration.configuration_loader import load_configuration
 from psitejob.configuration.configuration import Configuration
 from psitejob.job.message import MessageJob
+from psitejob.log import setup_logging
 from psitejob.repository.message import MessageRepository
 from psitejob.service.message import DiscordMessageService, EmailService
 
@@ -18,20 +19,6 @@ def parse_arguments() -> Namespace:
     parser.add_argument("-c", "--configuration", dest="configuration", type=str, required=True)
 
     return parser.parse_args()
-
-
-def setup_logging(configuration):
-    handler = logging.StreamHandler()
-    handler.setFormatter(
-        logging.Formatter(
-            fmt="%(asctime)s [%(levelname)-8s] %(name)s: %(message)s",
-            datefmt="%Y-%m-%d %H:%M:%S",
-        )
-    )
-    logger = logging.getLogger()
-    log_level = logging.DEBUG if configuration.test_mode_enabled else logging.INFO
-    logger.setLevel(log_level)
-    logger.addHandler(handler)
 
 
 def log_configuration_summary(configuration: Configuration):
@@ -53,7 +40,7 @@ def log_configuration_summary(configuration: Configuration):
 def main() -> None:
     args = parse_arguments()
     configuration = load_configuration(args.configuration)
-    setup_logging(configuration)
+    setup_logging(configuration, Path(__file__).stem)
     log_configuration_summary(configuration)
 
     message_repository = MessageRepository(configuration.db_configuration)
